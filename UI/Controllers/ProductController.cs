@@ -7,17 +7,17 @@ using web_api.Models;
 
 namespace UI.Controllers
 {
-    [Authorize]
+    ///[Authorize]
     public class ProductController : Controller
     {
 
-            private readonly HttpClient _client;
+        private readonly HttpClient _client;
 
-            public ProductController()
-            {
-                _client = new HttpClient();
-                _client.BaseAddress = new Uri("https://localhost:7269/api/");
-            }
+        public ProductController()
+        {
+            _client = new HttpClient();
+            _client.BaseAddress = new Uri("https://localhost:7269/api/");
+        }
 
         // GET: Product/Index
         //public IActionResult Index()
@@ -33,9 +33,9 @@ namespace UI.Controllers
 
 
         //    return View(productList);
-        
+
         //}
-        
+
         HttpClient client = new HttpClient();
 
         //public ActionResult Index()
@@ -44,7 +44,7 @@ namespace UI.Controllers
         //    client.BaseAddress = new Uri("https://localhost:7269/api/");
         //    var response = client.GetAsync("Grocessary");
         //    response.Wait();    
-            
+
         //    var test = response.Result;
         //    if(test.IsSuccessStatusCode)
         //    {
@@ -76,37 +76,37 @@ namespace UI.Controllers
 
 
         [HttpGet]
-            public IActionResult Create()
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+
+        [HttpPost]
+        public IActionResult Create(Product model)
+        {
+            try
             {
+                string data = JsonConvert.SerializeObject(model);
+                StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
+
+                HttpResponseMessage response = _client.PostAsync(_client.BaseAddress + "Grocessary/AddProduct", content).Result;
+
+
+                if (response.IsSuccessStatusCode)
+                {
+                    TempData["successMessage"] = "Product Created.";
+                    return RedirectToAction("Index");
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["errorMessage"] = ex.Message;
                 return View();
             }
 
-            
-            [HttpPost]
-            public IActionResult Create(Product model)
-            {
-                try
-                {
-                    string data = JsonConvert.SerializeObject(model);
-                    StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
-
-                    HttpResponseMessage response = _client.PostAsync(_client.BaseAddress + "Grocessary/AddProduct", content).Result;
-                   
-
-                    if (response.IsSuccessStatusCode)
-                    {
-                        TempData["successMessage"] = "Product Created.";
-                        return RedirectToAction("Index");
-                    }
-                }
-                catch (Exception ex)
-                {
-                    TempData["errorMessage"] = ex.Message;
-                    return View();
-                }
-
-                return View();
-            }
+            return View();
+        }
 
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
@@ -169,16 +169,19 @@ namespace UI.Controllers
 
 
         [HttpPost]
-        public IActionResult Edit(Product model)
+        public async Task<IActionResult> Edit(Product model)
         {
             try
             {
-                string data = JsonConvert.SerializeObject(model);
+                var data = JsonConvert.SerializeObject(model);
                 StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
 
-                //HttpResponseMessage response = _client.PutAsync(_client.BaseAddress + "Grocessary/UpadateProduct", content).Result;
+                // HttpResponseMessage response = _client.PutAsync(_client.BaseAddress + "Grocessary/UpadateProduct", content).Result;
                 //HttpResponseMessage response = _client.PutAsync($"Grocessary/UpdateProduct/{model.Id}", content).Result;
-                HttpResponseMessage response = _client.PutAsync($"api/Grocessary/UpadateProduct/{model.Id}", content).Result;
+                //HttpResponseMessage response = _client.PutAsync($"api/Grocessary/UpadateProduct/{model.Id}", content).Result;
+
+                HttpResponseMessage response = _client.PostAsync($"Grocessary/UpadateProduct", content).Result;
+
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -199,103 +202,103 @@ namespace UI.Controllers
         //    try
         //    {
 
-            //        string data = JsonConvert.SerializeObject(model);
+        //        string data = JsonConvert.SerializeObject(model);
 
-            //        StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
-
-
-            //        HttpResponseMessage response = _client.PutAsync($"api/Grocessary/UpadateProduct/{model.Id}", content).Result;
-
-            //        if (response.IsSuccessStatusCode)
-            //        {
-            //            TempData["successMessage"] = "Product updated successfully!";
-            //            return RedirectToAction("Index");
-            //        }
-
-            //        string error = response.Content.ReadAsStringAsync().Result;
-            //        TempData["errorMessage"] = $"Failed to update. Status: {response.StatusCode}, Error: {error}";
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        TempData["errorMessage"] = $"Exception: {ex.Message}";
-            //    }
-
-            //    return View(model);
-            //}
+        //        StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
 
 
+        //        HttpResponseMessage response = _client.PutAsync($"api/Grocessary/UpadateProduct/{model.Id}", content).Result;
 
-            //    return View(model);
-            //}
+        //        if (response.IsSuccessStatusCode)
+        //        {
+        //            TempData["successMessage"] = "Product updated successfully!";
+        //            return RedirectToAction("Index");
+        //        }
 
+        //        string error = response.Content.ReadAsStringAsync().Result;
+        //        TempData["errorMessage"] = $"Failed to update. Status: {response.StatusCode}, Error: {error}";
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        TempData["errorMessage"] = $"Exception: {ex.Message}";
+        //    }
 
-            //edit nahi thatu and redirect pan nahi thatu
-            //[HttpPost]
-            //public IActionResult Edit(Product model)
-            //{
-            //    try
-            //    {
-            //        string data = JsonConvert.SerializeObject(model);
-            //        StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
-
-            //        // HttpResponseMessage response = _client.PutAsync($"Grocessary/UpdateProduct/{model.Id}", content).Result;
-            //        HttpResponseMessage response = _client.PutAsync($"Grocessary/{model.Id}", content).Result;
-
-
-            //        if (response.IsSuccessStatusCode)
-            //        {
-            //            TempData["successMessage"] = "Product updated successfully!";
-            //            return RedirectToAction("Index");
-            //        }
-
-            //        string error = response.Content.ReadAsStringAsync().Result;
-            //        TempData["errorMessage"] = $"Failed to update. Status: {response.StatusCode}, Error: {error}";
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        TempData["errorMessage"] = $"Exception: {ex.Message}";
-            //    }
-
-            //    return View(model);
-            //}
+        //    return View(model);
+        //}
 
 
 
-            //edit pan nahi thatu nd redirect pan nahi thatu
-            //[HttpPost]
-            //public IActionResult Edit(Product model)
-            //{
-            //    try
-            //    {
-            //        string data = JsonConvert.SerializeObject(model);
-            //        StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
-
-            //        // Correct endpoint: PUT /api/Grocessary/{id}
-            //        HttpResponseMessage response = _client.PutAsync($"Grocessary/{model.Id}", content).Result;
-
-            //        if (response.IsSuccessStatusCode)
-            //        {
-            //            TempData["successMessage"] = "Product updated successfully!";
-            //            return RedirectToAction("Index");
-            //        }
-
-            //        string error = response.Content.ReadAsStringAsync().Result;
-            //        TempData["errorMessage"] = $"Failed to update. Status: {response.StatusCode}, Error: {error}";
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        TempData["errorMessage"] = $"Exception: {ex.Message}";
-            //    }
-
-            //    return View(model);
-            //}
+        //    return View(model);
+        //}
 
 
+        //edit nahi thatu and redirect pan nahi thatu
+        //[HttpPost]
+        //public IActionResult Edit(Product model)
+        //{
+        //    try
+        //    {
+        //        string data = JsonConvert.SerializeObject(model);
+        //        StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
+
+        //        // HttpResponseMessage response = _client.PutAsync($"Grocessary/UpdateProduct/{model.Id}", content).Result;
+        //        HttpResponseMessage response = _client.PutAsync($"Grocessary/{model.Id}", content).Result;
+
+
+        //        if (response.IsSuccessStatusCode)
+        //        {
+        //            TempData["successMessage"] = "Product updated successfully!";
+        //            return RedirectToAction("Index");
+        //        }
+
+        //        string error = response.Content.ReadAsStringAsync().Result;
+        //        TempData["errorMessage"] = $"Failed to update. Status: {response.StatusCode}, Error: {error}";
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        TempData["errorMessage"] = $"Exception: {ex.Message}";
+        //    }
+
+        //    return View(model);
+        //}
+
+
+
+        //edit pan nahi thatu nd redirect pan nahi thatu
+        //[HttpPost]
+        //public IActionResult Edit(Product model)
+        //{
+        //    try
+        //    {
+        //        string data = JsonConvert.SerializeObject(model);
+        //        StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
+
+        //        // Correct endpoint: PUT /api/Grocessary/{id}
+        //        HttpResponseMessage response = _client.PutAsync($"Grocessary/{model.Id}", content).Result;
+
+        //        if (response.IsSuccessStatusCode)
+        //        {
+        //            TempData["successMessage"] = "Product updated successfully!";
+        //            return RedirectToAction("Index");
+        //        }
+
+        //        string error = response.Content.ReadAsStringAsync().Result;
+        //        TempData["errorMessage"] = $"Failed to update. Status: {response.StatusCode}, Error: {error}";
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        TempData["errorMessage"] = $"Exception: {ex.Message}";
+        //    }
+
+        //    return View(model);
+        //}
 
 
 
 
-            // delte kare chhe pan deletion time a data show nahi kartu kai product chhe and also redirect  nahi kartu
+
+
+        // delte kare chhe pan deletion time a data show nahi kartu kai product chhe and also redirect  nahi kartu
         //public async Task<IActionResult> Delete(int id)
         //{
         //    try
@@ -387,11 +390,11 @@ namespace UI.Controllers
                 return RedirectToAction("Index");
             }
 
-           TempData["errorMessage"] = "Failed to delete product!"; 
+            TempData["errorMessage"] = "Failed to delete product!";
             return View();
         }
 
-   
+
 
 
 

@@ -4,7 +4,7 @@ using web_api.Models;
 
 namespace web_api.Controllers
 {
-    [Route("api/[controller]/[action]")]
+    [Route("api/Grocessary")]
     [ApiController]
     public class GrocessaryController : ControllerBase
     {
@@ -16,6 +16,7 @@ namespace web_api.Controllers
         }
 
         [HttpPost]
+        [Route("addproduct")]
         public IActionResult AddProduct(Product product)
         {
             _context.Products.Add(product);
@@ -24,11 +25,8 @@ namespace web_api.Controllers
 
         }
 
-
-      
-
-
         [HttpGet]
+        [Route("GetAllProduct")]
         public IActionResult GetAllProduct()
         {
             var products = _context.Products;
@@ -36,10 +34,8 @@ namespace web_api.Controllers
 
         }
 
-
-
-
-        [HttpGet("{id}")]
+        [HttpGet]
+        [Route("GetProductById/{id:int}")]
         public IActionResult GetProductById(int id)
         {
             try
@@ -56,14 +52,12 @@ namespace web_api.Controllers
             }
         }
 
-
-
-
-        [HttpPut("{id}")]
-        public IActionResult UpadateProduct(int id, [FromBody] Product updateproduct)
+        [HttpPost]
+        [Route("UpadateProduct")]
+        public IActionResult UpadateProduct([FromBody] Product updateproduct)
         {
 
-            var product = _context.Products.Find(id);
+            var product = _context.Products.Find(updateproduct.Id);
             if (product == null)
                 return NotFound();
 
@@ -77,9 +71,8 @@ namespace web_api.Controllers
 
         }
 
-
-
-        [HttpDelete("{id}")]
+        [HttpDelete]
+        [Route("delete/{id:int}")]
 
         public IActionResult DeleteProduct(int id)
         {
@@ -88,12 +81,12 @@ namespace web_api.Controllers
             {
                 return NotFound();
             }
-             
+
             _context.Products.Remove(product);
             _context.SaveChanges();
 
             return Ok(new { message = "Product Deleted Successfully" });
-        
+
         }
 
     }
